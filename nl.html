@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbreker Detector 7000</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'security-black': '#050505',
+                        'security-panel': '#111111',
+                        'neon-green': '#00ff9d',
+                        'neon-red': '#ff0055',
+                        'neon-blue': '#00d4ff',
+                        'neon-purple': '#b026ff',
+                    },
+                    fontFamily: {
+                        'header': ['Orbitron', 'sans-serif'],
+                        'body': ['Roboto', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden; /* Prevent horz scroll */
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #00ff9d; border-radius: 4px; }
+
+        /* Tech Look Elements */
+        .tech-border {
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            background: rgba(17, 17, 17, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        .tech-card {
+            transition: all 0.3s ease;
+        }
+        .tech-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff9d;
+            box-shadow: 0 0 25px rgba(0, 255, 157, 0.15);
+        }
+
+        /* Nav Link Active State */
+        .nav-link.active {
+            color: #00ff9d;
+            border-bottom: 2px solid #00ff9d;
+            text-shadow: 0 0 10px rgba(0,255,157,0.5);
+        }
+
+        /* Page Transitions */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .page-section.active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HEIC Warning Note Style */
+        .heic-warning {
+            font-size: 0.7rem;
+            color: #ffaa00;
+            background: rgba(255, 170, 0, 0.1);
+            padding: 2px 5px;
+            border-radius: 4px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-neon-green selection:text-black min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-security-black/95 backdrop-blur border-b border-gray-800 shadow-[0_0_20px_rgba(0,255,157,0.1)]">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPage('home')">
+                <i class="fa-solid fa-shield-halved text-neon-green text-2xl"></i>
+                <span class="font-header text-xl font-bold tracking-wider text-white">ID<span class="text-neon-green">7000</span></span>
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-bold text-gray-400">
+                <button onclick="switchPage('home')" class="nav-link active hover:text-white transition-all py-2">Home</button>
+                <button onclick="switchPage('techniek')" class="nav-link hover:text-white transition-all py-2">Techniek & OS</button>
+                <button onclick="switchPage('geschiedenis')" class="nav-link hover:text-white transition-all py-2">Geschiedenis</button>
+                <button onclick="switchPage('galerij')" class="nav-link hover:text-white transition-all py-2">Galerij</button>
+                <button onclick="switchPage('demo')" class="nav-link text-neon-blue hover:text-white transition-all py-2 border border-neon-blue px-4 rounded hover:bg-neon-blue hover:text-black">Demo App</button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white text-xl" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-security-panel border-t border-gray-800 p-4 space-y-3 text-center">
+            <button onclick="switchPage('home')" class="block w-full text-gray-300 py-2">Home</button>
+            <button onclick="switchPage('techniek')" class="block w-full text-gray-300 py-2">Techniek</button>
+            <button onclick="switchPage('geschiedenis')" class="block w-full text-gray-300 py-2">Geschiedenis</button>
+            <button onclick="switchPage('galerij')" class="block w-full text-gray-300 py-2">Galerij</button>
+            <button onclick="switchPage('demo')" class="block w-full text-neon-blue py-2">Demo</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-20 relative">
+        <div class="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-900/20 via-black to-black"></div>
+
+        <!-- ================= PAGE: HOME ================= -->
+        <section id="home" class="page-section active-page container mx-auto px-6 py-10 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12 mt-10">
+                <div class="lg:w-1/2 text-left">
+                    <div class="inline-block px-3 py-1 mb-4 border border-neon-green/50 text-neon-green text-xs font-bold tracking-widest uppercase rounded bg-neon-green/10">
+                        Schoolproject Boris & Milan
+                    </div>
+                    <h1 class="font-header text-5xl md:text-7xl font-black mb-6 leading-tight text-white">
+                        INBREKER<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-green to-neon-blue">DETECTOR 7000</span>
+                    </h1>
+                    <p class="text-xl text-gray-400 mb-8 leading-relaxed">
+                        De ultieme beveiliging. Aangedreven door de Raspberry Pi 2B en ons eigen SecureWatch OS. Sneller, slimmer en altijd verbonden.
+                    </p>
+                    <div class="flex gap-4">
+                        <button onclick="switchPage('demo')" class="px-8 py-4 bg-neon-green text-black font-header font-bold rounded hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,255,157,0.4)]">
+                            START DEMO
+                        </button>
+                        <button onclick="switchPage('techniek')" class="px-8 py-4 border border-gray-600 text-gray-300 font-header font-bold rounded hover:border-neon-blue hover:text-white transition-all">
+                            BEKIJK DE TECH
+                        </button>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 flex justify-center">
+                    <!-- 3D Case Preview (Placeholder or specific image) -->
+                    <div class="relative w-full max-w-md aspect-square bg-gradient-to-b from-gray-800 to-black rounded-full p-1 border border-gray-700 animate-float">
+                        <div class="absolute inset-0 bg-neon-green/10 rounded-full blur-3xl"></div>
+                        <img src="project.png" alt="ID7000 Case" class="relative z-10 w-full h-full object-cover rounded-full border-4 border-gray-800 shadow-2xl" onerror="this.src='https://placehold.co/400x400/111/00ff9d?text=ID7000+Case'">
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Features -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
+                <div class="tech-border p-6 rounded-lg tech-card">
+                    <i class="fa-solid fa-brain text-neon-purple text-3xl mb-4"></i>
+                    <h3 class="font-header text-lg font-bold">SecureWatch OS</h3>
+                    <p class="text-sm text-gray-400">Ons eigen besturingssysteem, geoptimaliseerd voor snelheid en beveiliging.</p>
+                </div>
+                <div class="tech-border p-6 rounded-lg tech-card">
+                    <i class="fa-solid fa-wifi text-neon-blue text-3xl mb-4"></i>
+                    <h3 class="font-header text-lg font-bold">Remote Access</h3>
+                    <p class="text-sm text-gray-400">Bedien het alarm via WiFi met de ESP32 controller.</p>
+                </div>
+                <div class="tech-border p-6 rounded-lg tech-card">
+                    <i class="fa-solid fa-layer-group text-neon-green text-3xl mb-4"></i>
+                    <h3 class="font-header text-lg font-bold">3-Laags Systeem</h3>
+                    <p class="text-sm text-gray-400">Arduino sensoren, Pi brein en ESP32 interface werken samen.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: TECHNIEK ================= -->
+        <section id="techniek" class="page-section container mx-auto px-6 py-10 relative z-10">
+            <h2 class="font-header text-4xl font-bold mb-10 text-center">Technische <span class="text-neon-blue">Specificaties</span></h2>
+
+            <!-- OS Section -->
+            <div class="bg-gray-900/50 border border-gray-700 rounded-2xl p-8 mb-12 flex flex-col md:flex-row items-center gap-8">
+                <div class="w-40 h-40 flex-shrink-0 bg-black rounded-full border-2 border-neon-purple flex items-center justify-center p-4 shadow-[0_0_30px_rgba(176,38,255,0.2)]">
+                    <!-- SecureWatch OS Logo -->
+                    <img src="logo-os.png" alt="SecureWatch OS" class="w-full h-full object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fa-solid fa-fingerprint text-5xl text-neon-purple\'></i>'">
+                </div>
+                <div>
+                    <h3 class="font-header text-3xl font-bold text-white mb-2">SecureWatch OS</h3>
+                    <p class="text-neon-purple font-mono text-sm mb-4">Based on Raspberry Pi OS • Real-time Kernel</p>
+                    <p class="text-gray-300 leading-relaxed max-w-2xl">
+                        De Raspberry Pi draait op <strong>SecureWatch OS</strong>, een lichtgewicht besturingssysteem dat wij speciaal hebben geoptimaliseerd. Het is gericht op real-time detectie, stabiele netwerkcommunicatie en systeembeheer. Het OS zorgt ervoor dat het alarm nooit vastloopt en altijd direct reageert.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Architecture Grid -->
+            <h3 class="font-header text-2xl mb-6 pl-2 border-l-4 border-neon-green">Systeem Architectuur</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+                
+                <!-- Layer 1: Arduino -->
+                <div class="tech-border p-6 rounded-xl relative group">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs px-2 py-1 rounded-bl text-gray-400">LAAG 1</div>
+                    <div class="text-neon-red text-4xl mb-4"><i class="fa-solid fa-eye"></i></div>
+                    <h4 class="font-header text-xl font-bold mb-2">Arduino Mega 2560</h4>
+                    <p class="text-xs font-bold text-gray-500 uppercase mb-3">Sensorlaag</p>
+                    <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                        <li>Leest bewegingssensoren uit</li>
+                        <li>Detecteert trillingen</li>
+                        <li>Controleert deurcontacten</li>
+                        <li>Stuurt ruwe data naar de Pi</li>
+                    </ul>
+                </div>
+
+                <!-- Layer 2: Pi (Center) -->
+                <div class="tech-border p-6 rounded-xl border-neon-green bg-green-900/10 relative transform md:-translate-y-4 shadow-[0_0_30px_rgba(0,255,157,0.1)]">
+                    <div class="absolute top-0 right-0 bg-neon-green text-black font-bold text-xs px-2 py-1 rounded-bl">LAAG 2 (BREIN)</div>
+                    <div class="text-neon-green text-4xl mb-4"><i class="fa-brands fa-raspberry-pi"></i></div>
+                    <h4 class="font-header text-xl font-bold mb-2">Raspberry Pi 2B</h4>
+                    <p class="text-xs font-bold text-gray-500 uppercase mb-3">Centrale Controller</p>
+                    <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                        <li>Draait SecureWatch OS</li>
+                        <li>Analyseert sensor data</li>
+                        <li>Beslist of het inbraak is</li>
+                        <li>Verstuurt Emails & Logs</li>
+                        <li>Beheert status (Armed/Disarmed)</li>
+                    </ul>
+                </div>
+
+                <!-- Layer 3: ESP32 -->
+                <div class="tech-border p-6 rounded-xl relative">
+                    <div class="absolute top-0 right-0 bg-gray-800 text-xs px-2 py-1 rounded-bl text-gray-400">LAAG 3</div>
+                    <div class="text-neon-blue text-4xl mb-4"><i class="fa-solid fa-mobile-signal"></i></div>
+                    <h4 class="font-header text-xl font-bold mb-2">ESP32</h4>
+                    <p class="text-xs font-bold text-gray-500 uppercase mb-3">Toegang & Interface</p>
+                    <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                        <li>WiFi & Bluetooth verbinding</li>
+                        <li>Ontvangt commando's van App</li>
+                        <li>Stuurt 'ARM' verzoek naar Pi</li>
+                        <li>RFID ondersteuning</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Workflow Diagram (CSS) -->
+            <div class="text-center p-6 bg-black rounded-xl border border-gray-800">
+                <p class="font-mono text-xs text-gray-500 mb-4">DATASTROOM SCHEMA</p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-sm font-bold">
+                    <div class="bg-gray-800 px-4 py-2 rounded text-gray-300">Sensoren</div>
+                    <i class="fa-solid fa-arrow-right text-gray-600 hidden md:block"></i><i class="fa-solid fa-arrow-down text-gray-600 md:hidden"></i>
+                    <div class="bg-red-900/30 text-red-400 border border-red-900 px-4 py-2 rounded">Arduino</div>
+                    <i class="fa-solid fa-arrow-right text-neon-green animate-pulse hidden md:block"></i><i class="fa-solid fa-arrow-down text-neon-green animate-pulse md:hidden"></i>
+                    <div class="bg-green-900/30 text-neon-green border border-neon-green px-6 py-3 rounded shadow-[0_0_15px_rgba(0,255,157,0.3)]">Raspberry Pi (Logic)</div>
+                    <i class="fa-solid fa-arrow-left text-neon-blue animate-pulse hidden md:block"></i><i class="fa-solid fa-arrow-up text-neon-blue animate-pulse md:hidden"></i>
+                    <div class="bg-blue-900/30 text-blue-400 border border-blue-900 px-4 py-2 rounded">ESP32 (User)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: GESCHIEDENIS ================= -->
+        <section id="geschiedenis" class="page-section container mx-auto px-6 py-10 relative z-10">
+            <h2 class="font-header text-4xl font-bold mb-10 text-center">Evolutie: <span class="text-gray-500">5000</span> vs <span class="text-neon-green">7000</span></h2>
+
+            <!-- Logos Comparison -->
+            <div class="flex justify-center items-center gap-8 md:gap-20 mb-16">
+                <div class="text-center opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                    <div class="w-32 h-32 md:w-48 md:h-48 bg-gray-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-gray-600">
+                        <img src="logo-oud.png" alt="Logo 5000" class="w-24 md:w-32" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-4xl font-bold text-gray-500\'>5000</span>'">
+                    </div>
+                    <h3 class="font-header text-xl text-gray-400">Model 5000</h3>
+                    <p class="text-xs">2024 - 2025</p>
+                </div>
+                
+                <i class="fa-solid fa-arrow-right text-4xl text-neon-green animate-pulse hidden md:block"></i>
+
+                <div class="text-center transform scale-110">
+                    <div class="w-32 h-32 md:w-48 md:h-48 bg-black rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-neon-green shadow-[0_0_40px_rgba(0,255,157,0.3)]">
+                        <img src="logo-nieuw.png" alt="Logo 7000" class="w-24 md:w-32" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-4xl font-bold text-neon-green\'>7000</span>'">
+                    </div>
+                    <h3 class="font-header text-xl text-white">Model 7000</h3>
+                    <p class="text-xs text-neon-green">2025 - 2026</p>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="bg-gray-900 rounded-xl overflow-hidden border border-gray-700 mb-16 max-w-4xl mx-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-black text-gray-300">
+                        <tr>
+                            <th class="p-4">Functie</th>
+                            <th class="p-4 text-gray-500">ID 5000</th>
+                            <th class="p-4 text-neon-green">ID 7000</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700 text-sm">
+                        <tr>
+                            <td class="p-4 font-bold">Brein</td>
+                            <td class="p-4 text-gray-500">Arduino (Standalone)</td>
+                            <td class="p-4 text-white font-bold">Raspberry Pi 2B + OS</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-bold">Alarm Type</td>
+                            <td class="p-4 text-gray-500">Zoemer</td>
+                            <td class="p-4 text-white">Zoemer + Email + Push</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-bold">Behuizing</td>
+                            <td class="p-4 text-gray-500">3D-Geprint PLA</td>
+                            <td class="p-4 text-white">3D-Geprint PLA</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-bold">Connectiviteit</td>
+                            <td class="p-4 text-gray-500">Geen (Offline)</td>
+                            <td class="p-4 text-white">WiFi & Bluetooth (ESP32)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Old Photos Gallery (HEIC support note: Users must convert these usually) -->
+            <h3 class="font-header text-2xl mb-6 pl-2 border-l-4 border-gray-600">Archief: De Oude 5000</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="aspect-square bg-gray-800 rounded-lg overflow-hidden relative group">
+                    <img src="Inbreker-detector (1).png" alt="Foto ID 5000 1" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/300x300/333/666?text=Foto+1';">
+                </div>
+                <div class="aspect-square bg-gray-800 rounded-lg overflow-hidden relative group">
+                    <img src="Inbreker-detector (2).png" alt="Foto ID 5000 2" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/300x300/333/666?text=Foto+2';">
+                </div>
+                <div class="aspect-square bg-gray-800 rounded-lg overflow-hidden relative group">
+                    <img src="Inbreker-detector (3).png" alt="Foto ID 5000 3" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/300x300/333/666?text=Foto+3';">
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: GALERIJ ================= -->
+        <section id="galerij" class="page-section container mx-auto px-6 py-10 relative z-10">
+            <h2 class="font-header text-4xl font-bold mb-10 text-center">Project <span class="text-neon-green">Galerij</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Development Photo -->
+                <div class="tech-border p-2 rounded-xl group hover:border-neon-purple transition-colors">
+                    <div class="aspect-video bg-black overflow-hidden rounded relative">
+                        <img src="ontwikkeling.png" alt="Ontwikkeling" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/220022/b026ff?text=Ontwikkeling+Fase'">
+                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4">
+                            <span class="text-neon-purple font-bold">Ontwikkeling</span>
+                            <p class="text-xs text-gray-300">De spaghetti fase (bedrading testen)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Photo 1 -->
+                <div class="tech-border p-2 rounded-xl group">
+                    <div class="aspect-video bg-black overflow-hidden rounded relative">
+                        <img src="project.png" alt="Project 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/112211/00ff9d?text=Project+Foto'">
+                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4">
+                            <span class="text-neon-green font-bold">Hardware Setup</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Photo 2 -->
+                <div class="tech-border p-2 rounded-xl group">
+                    <div class="aspect-video bg-black overflow-hidden rounded relative">
+                        <img src="project3.png" alt="Project 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/112211/00ff9d?text=Project+Foto'">
+                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4">
+                            <span class="text-neon-green font-bold">Intern Circuit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Photo 3 -->
+                <div class="tech-border p-2 rounded-xl group">
+                    <div class="aspect-video bg-black overflow-hidden rounded relative">
+                        <img src="project2.png" alt="Project 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/112211/00ff9d?text=Project+Foto'">
+                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4">
+                            <span class="text-neon-green font-bold">Eindresultaat</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: DEMO ================= -->
+        <section id="demo" class="page-section container mx-auto px-6 py-10 relative z-10">
+            <div class="flex flex-col items-center">
+                <h2 class="font-header text-4xl font-bold mb-4">ESP32 <span class="text-neon-blue">Interface</span></h2>
+                <p class="text-gray-400 mb-10 text-center max-w-lg">
+                    Dit is de web-app die op de ESP32 draait. Hiermee sturen we via WiFi een signaal naar de Raspberry Pi om het systeem op scherp te zetten.
+                </p>
+
+                <!-- Phone Frame -->
+                <div class="phone-mockup w-[320px] h-[650px] bg-gray-900 relative shadow-2xl border-4 border-gray-800 rounded-[2.5rem] overflow-hidden">
+                    <!-- Status Bar -->
+                    <div class="h-8 bg-black w-full flex justify-between items-center px-6 text-xs text-white z-20 relative">
+                        <span>14:30</span>
+                        <div class="flex gap-2">
+                            <i class="fa-solid fa-wifi text-neon-green"></i>
+                            <i class="fa-solid fa-battery-full"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- App UI Content -->
+                    <div class="h-full bg-gray-900 flex flex-col relative">
+                        <!-- BG Effects -->
+                        <div id="app-bg-pulse" class="absolute inset-0 bg-neon-green/5 transition-colors duration-500"></div>
+                        <div class="absolute inset-0" style="background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+                        <!-- App Header -->
+                        <div class="p-6 pt-8 z-10">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-10 h-10 bg-black rounded-lg border border-gray-700 flex items-center justify-center">
+                                    <i class="fa-solid fa-shield-halved text-neon-green"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white">ID 7000</h4>
+                                    <p class="text-xs text-gray-500">Connected to RPi-2B</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-black/40 backdrop-blur rounded-xl p-4 border border-gray-800">
+                                <p class="text-xs text-gray-400 mb-1">SYSTEM STATUS</p>
+                                <div id="status-badge" class="text-neon-green font-header font-bold text-xl tracking-wider">
+                                    DISARMED
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Button -->
+                        <div class="flex-grow flex items-center justify-center z-10">
+                            <button id="toggle-alarm-btn" class="group relative w-48 h-48 rounded-full bg-gray-800 border-8 border-gray-700 flex flex-col items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-300 active:scale-95">
+                                <div id="btn-glow" class="absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 shadow-[0_0_60px_#ff0055]"></div>
+                                <i id="lock-icon" class="fa-solid fa-lock-open text-5xl text-gray-500 mb-2 transition-colors duration-300"></i>
+                                <span id="btn-text" class="text-xs font-bold text-gray-600">TAP TO ARM</span>
+                            </button>
+                        </div>
+
+                        <!-- Logs -->
+                        <div class="h-1/3 bg-black/80 backdrop-blur-md rounded-t-3xl p-6 z-10 border-t border-gray-800">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-xs font-bold text-gray-400">ACTIVITY LOG</span>
+                                <span class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
+                            </div>
+                            <div id="log-container" class="space-y-2 h-32 overflow-y-auto text-xs font-mono scrollbar-hide">
+                                <div class="text-gray-500 border-l-2 border-gray-700 pl-2">Verboden met SecureWatch OS...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8 border-t border-gray-900 mt-auto z-20 relative">
+        <div class="container mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="font-header font-bold text-lg text-white">ID<span class="text-neon-green">7000</span></span>
+                <p class="text-gray-600 text-xs mt-1">© 2024-2026 Boris & Milan</p>
+            </div>
+            <div class="flex space-x-8 text-xs text-gray-500">
+                <div>
+                    <span class="block text-white font-bold mb-1">BORIS</span>
+                    Hardware, Case Design, SecureWatch OS & Code
+                </div>
+                <div>
+                    <span class="block text-white font-bold mb-1">MILAN</span>
+                    Micro-assembleur, Test engineer & assemblage-technicus
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Page Navigation Logic
+        function switchPage(pageId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(el => {
+                el.classList.remove('active-page');
+            });
+            
+            // Show target section
+            document.getElementById(pageId).classList.add('active-page');
+            
+            // Update Nav Links Active State
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active', 'text-neon-green');
+                // Simple check if button text matches pageId somewhat roughly or use data attributes
+                // For simplicity, we just reset all and let the user click visually.
+                // A better way is to pass 'this' but buttons are separate.
+            });
+            
+            // Highlight current button (simplified loop)
+            const buttons = document.querySelectorAll('.nav-link');
+            if(pageId === 'home') buttons[0].classList.add('active');
+            if(pageId === 'techniek') buttons[1].classList.add('active');
+            if(pageId === 'geschiedenis') buttons[2].classList.add('active');
+            if(pageId === 'galerij') buttons[3].classList.add('active');
+            
+            window.scrollTo(0,0);
+        }
+
+        // Mobile App Logic
+        const btn = document.getElementById('toggle-alarm-btn');
+        const icon = document.getElementById('lock-icon');
+        const btnText = document.getElementById('btn-text');
+        const statusBadge = document.getElementById('status-badge');
+        const bgPulse = document.getElementById('app-bg-pulse');
+        const btnGlow = document.getElementById('btn-glow');
+        const logContainer = document.getElementById('log-container');
+        
+        let isArmed = false;
+
+        function addLog(msg, type = 'info') {
+            const div = document.createElement('div');
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            let colorClass = 'text-gray-400 border-gray-600';
+            if(type === 'alert') colorClass = 'text-red-400 border-red-500';
+            if(type === 'success') colorClass = 'text-neon-green border-neon-green';
+            
+            div.className = `border-l-2 pl-2 ${colorClass} animate-pulse`;
+            div.innerHTML = `<span class="opacity-50 mr-2">${time}</span>${msg}`;
+            
+            logContainer.prepend(div);
+        }
+
+        btn.addEventListener('click', () => {
+            isArmed = !isArmed;
+
+            if (isArmed) {
+                // ARMING
+                icon.classList.replace('fa-lock-open', 'fa-lock');
+                icon.classList.replace('text-gray-500', 'text-white');
+                btnText.textContent = "SYSTEM ARMED";
+                btnText.classList.add('text-white');
+                
+                statusBadge.textContent = "ARMED";
+                statusBadge.classList.replace('text-neon-green', 'text-neon-red');
+                
+                bgPulse.classList.replace('bg-neon-green/5', 'bg-red-500/20');
+                
+                btn.classList.add('border-red-600');
+                btn.classList.remove('border-gray-700');
+                btnGlow.classList.remove('opacity-0');
+                
+                addLog('Verzoek verzonden naar ESP32...', 'info');
+                setTimeout(() => addLog('RPi: Commando ontvangen', 'info'), 600);
+                setTimeout(() => addLog('SecureWatch OS: Alarm Ingeschakeld', 'alert'), 1200);
+
+            } else {
+                // DISARMING
+                icon.classList.replace('fa-lock', 'fa-lock-open');
+                icon.classList.replace('text-white', 'text-gray-500');
+                btnText.textContent = "TAP TO ARM";
+                btnText.classList.remove('text-white');
+                
+                statusBadge.textContent = "DISARMED";
+                statusBadge.classList.replace('text-neon-red', 'text-neon-green');
+                
+                bgPulse.classList.replace('bg-red-500/20', 'bg-neon-green/5');
+                
+                btn.classList.remove('border-red-600');
+                btn.classList.add('border-gray-700');
+                btnGlow.classList.add('opacity-0');
+                
+                addLog('Systeem gedeactiveerd via App', 'success');
+            }
+        });
+    </script>
+</body>
+</html>
