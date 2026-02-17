@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Pagina Niet Gevonden | Inbreker Detector 7000</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'security-black': '#050505',
+                        'security-panel': '#111111',
+                        'neon-green': '#00ff9d',
+                        'neon-red': '#ff0055',
+                        'neon-blue': '#00d4ff',
+                        'neon-purple': '#b026ff',
+                    },
+                    fontFamily: {
+                        'header': ['Orbitron', 'sans-serif'],
+                        'body': ['Roboto', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glitch': 'glitch 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        glitch: {
+                            '0%, 100%': { transform: 'translate(0)' },
+                            '20%': { transform: 'translate(-2px, 2px)' },
+                            '40%': { transform: 'translate(-2px, -2px)' },
+                            '60%': { transform: 'translate(2px, 2px)' },
+                            '80%': { transform: 'translate(2px, -2px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #00ff9d; border-radius: 4px; }
+
+        /* Tech Look Elements */
+        .tech-border {
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            background: rgba(17, 17, 17, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .tech-card {
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff9d;
+            box-shadow: 0 0 25px rgba(0, 255, 157, 0.15);
+        }
+
+        /* Nav Link Active State */
+        .nav-link.active {
+            color: #00ff9d;
+            border-bottom: 2px solid #00ff9d;
+            text-shadow: 0 0 10px rgba(0,255,157,0.5);
+        }
+
+        /* Glitch Effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            animation: glitch 2s infinite;
+            color: #ff0055;
+            z-index: -1;
+        }
+
+        .glitch-text::after {
+            animation: glitch 2s infinite reverse;
+            color: #00d4ff;
+            z-index: -1;
+        }
+
+        /* Neon Glow */
+        .neon-glow {
+            text-shadow: 
+                0 0 5px #00ff9d,
+                0 0 10px #00ff9d,
+                0 0 20px #00ff9d,
+                0 0 30px #00ff9d,
+                0 0 40px #b026ff;
+        }
+
+        /* Scanlines Animation */
+        .scanlines {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scanlines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 157, 0.05),
+                rgba(0, 255, 157, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+
+        /* Button Glow */
+        .button-glow {
+            box-shadow: 
+                0 0 10px rgba(0, 255, 157, 0.5),
+                0 0 20px rgba(0, 255, 157, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .button-glow:hover {
+            box-shadow: 
+                0 0 20px rgba(0, 255, 157, 0.8),
+                0 0 40px rgba(0, 255, 157, 0.5),
+                0 0 60px rgba(176, 38, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-neon-green selection:text-black min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-security-black/95 backdrop-blur border-b border-gray-800 shadow-[0_0_20px_rgba(0,255,157,0.1)]">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+                <i class="fa-solid fa-shield-halved text-neon-green text-2xl"></i>
+                <span class="font-header text-xl font-bold tracking-wider text-white">ID<span class="text-neon-green">7000</span></span>
+            </div>
+            
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-20 relative flex items-center justify-center">
+        <div class="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-900/20 via-black to-black"></div>
+
+        <!-- 404 Content -->
+        <div class="relative z-10 container mx-auto px-6 py-20 text-center">
+            <!-- Error Code with Glitch Effect -->
+            <div class="mb-8 relative inline-block">
+                <div class="font-header text-[120px] md:text-[180px] font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-neon-red via-neon-purple to-neon-blue animate-pulse">
+                    404
+                </div>
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="font-header text-[120px] md:text-[180px] font-black leading-none text-neon-red/40 animate-glitch" style="animation-delay: 0.2s;">
+                        404
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Icon -->
+            <div class="mb-8 flex justify-center">
+                <div class="relative">
+                    <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-neon-red flex items-center justify-center animate-float">
+                        <i class="fa-solid fa-triangle-exclamation text-6xl md:text-7xl text-neon-red animate-pulse"></i>
+                    </div>
+                    <div class="absolute inset-0 rounded-full border-2 border-neon-red/30 animate-pulse" style="animation-delay: 0.5s;"></div>
+                </div>
+            </div>
+
+            <!-- Heading -->
+            <h1 class="font-header text-5xl md:text-6xl font-black mb-4 text-white">
+                SYSTEEM FOUT
+            </h1>
+            <h2 class="font-header text-3xl md:text-4xl font-bold mb-6 text-neon-red">
+                PAGINA NIET GEVONDEN
+            </h2>
+
+            <!-- Description -->
+            <div class="max-w-2xl mx-auto mb-12">
+                <p class="text-lg text-gray-300 mb-4 leading-relaxed">
+                    Het lijkt erop dat u naar een pagina probeert te gaan die niet meer bestaat of verplaatst is.
+                </p>
+                <p class="text-gray-400 font-mono text-sm">
+                    ERROR CODE: ID7000-404 | TIMESTAMP: <span id="error-time"></span>
+                </p>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+                <div class="tech-border p-6 rounded-lg tech-card">
+                    <i class="fa-solid fa-wifi text-neon-purple text-3xl mb-4"></i>
+                    <h3 class="font-header text-lg font-bold mb-2">Verbinding Verbroken?</h3>
+                    <p class="text-sm text-gray-400">Controleer of de URL correct is.</p>
+                </div>
+                <div class="tech-border p-6 rounded-lg tech-card">
+                    <i class="fa-solid fa-shield-halved text-neon-blue text-3xl mb-4"></i>
+                    <h3 class="font-header text-lg font-bold mb-2">Beveiligd Systeem</h3>
+                    <p class="text-sm text-gray-400">Deze pagina is buiten bereik.</p>
+                </div>
+                <div class="tech-border p-6 rounded-lg tech-card">
+                    <i class="fa-solid fa-house text-neon-green text-3xl mb-4"></i>
+                    <h3 class="font-header text-lg font-bold mb-2">Terug naar Basis</h3>
+                    <p class="text-sm text-gray-400">Keer terug naar de homepage.</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <button onclick="window.location.href='index.html'" class="px-8 py-4 bg-neon-green text-black font-header font-bold rounded hover:bg-white hover:scale-105 transition-all button-glow shadow-[0_0_20px_rgba(0,255,157,0.4)]">
+                    <i class="fa-solid fa-home mr-2"></i> TERUG NAAR HOME
+                </button>
+            </div>
+
+            <!-- Status Log -->
+            <div class="tech-border p-6 rounded-lg max-w-2xl mx-auto text-left bg-black/50">
+                <p class="font-mono text-xs text-gray-500 mb-4 uppercase">SYSTEEM STATUS LOG</p>
+                <div class="space-y-2 font-mono text-xs">
+                    <div class="text-gray-400"><span class="text-neon-green">✓</span> Netwerk: Verbonden</div>
+                    <div class="text-gray-400"><span class="text-neon-green">✓</span> Server: Online</div>
+                    <div class="text-neon-red animate-pulse"><span class="text-neon-red">✗</span> Pagina: Niet gevonden</div>
+                    <div class="text-gray-400"><span class="text-neon-blue">→</span> Suggestie: Probeer de homepage</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8 border-t border-gray-900 mt-auto z-20 relative">
+        <div class="container mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="font-header font-bold text-lg text-white">ID<span class="text-neon-green">7000</span></span>
+                <p class="text-gray-600 text-xs mt-1">© 2024-2026 Boris & Milan</p>
+            </div>
+            <div class="flex space-x-8 text-xs text-gray-500">
+                <div>
+                    <span class="block text-white font-bold mb-1">BORIS</span>
+                    Hardware, Case Design, SecureWatch OS & Code
+                </div>
+                <div>
+                    <span class="block text-white font-bold mb-1">MILAN</span>
+                    Micro-assembleur, Test engineer & assemblage-technicus
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Set error timestamp
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('error-time').textContent = now.toLocaleString('nl-NL');
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Mobile Menu Toggle
+        document.addEventListener('click', (e) => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuBtn = document.querySelector('[onclick*="mobile-menu"]').parentElement;
+            if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
