@@ -26,7 +26,7 @@ A live demo is available through the website interface.
 - SecureWatch OS (custom‑built)
 
 ## 👥 Credits
-**ID 7000 © 2024–2026 — Boris & Milan**
+**ID 7000 © 2024–2026 — Boris de Bruin & Milan van Mannekes**
 
 | Name  | Role |
 |-------|------|
