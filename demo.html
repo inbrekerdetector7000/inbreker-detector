@@ -1,0 +1,1285 @@
+
+
+    <!DOCTYPE html>
+    <html lang="nl">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>🔒 Inbreker Detector 7000</title>
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        html, body {
+          width: 100%;
+          height: 100%;
+        }
+        
+        body {
+          font-family: 'Inter', 'Segoe UI', sans-serif;
+          background-color: #f3f4f6;
+          color: #1f2937;
+          min-height: 100vh;
+        }
+        
+        .screen {
+          display: none;
+          width: 100%;
+          min-height: 100vh;
+          padding: 40px 20px;
+          position: relative;
+        }
+        
+        .screen.active {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        
+        .screen.fullscreen {
+          padding: 0;
+          width: 100%;
+          height: 100vh;
+          overflow: auto;
+        }
+        
+        .container {
+          width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        
+        /* ===== HOMEPAGE ===== */
+        .screen-home {
+          background: white;
+        }
+        
+        .home-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 60px;
+        }
+        
+        .home-title-section h1 {
+          font-size: 48px;
+          font-weight: 700;
+          color: #2563eb;
+          margin-bottom: 8px;
+        }
+        
+        .home-title-section p {
+          font-size: 18px;
+          color: #6b7280;
+        }
+        
+        .home-buttons {
+          display: flex;
+          gap: 16px;
+        }
+        
+        .btn-login {
+          background: #2563eb;
+          color: white;
+          border: none;
+          padding: 12px 32px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-login:hover {
+          background: #1d4ed8;
+          transform: translateY(-2px);
+          box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .hero-content {
+          margin-bottom: 60px;
+        }
+        
+        .hero-content h2 {
+          font-size: 48px;
+          font-weight: 700;
+          color: #1f2937;
+          margin-bottom: 24px;
+          line-height: 1.2;
+        }
+        
+        .hero-content p {
+          font-size: 18px;
+          color: #6b7280;
+          margin-bottom: 32px;
+          max-width: 600px;
+        }
+        
+        .cards-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 32px;
+          margin-top: 40px;
+        }
+        
+        .card {
+          background: white;
+          padding: 32px;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s;
+        }
+        
+        .card:hover {
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h3 {
+          font-size: 24px;
+          font-weight: 700;
+          margin-bottom: 16px;
+        }
+        
+        .card p {
+          font-size: 16px;
+          color: #6b7280;
+          line-height: 1.6;
+        }
+        
+        /* ===== LOGIN MODAL ===== */
+        .login-modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.75);
+          z-index: 1000;
+          justify-content: center;
+          align-items: center;
+        }
+        
+        .login-modal.active {
+          display: flex;
+        }
+        
+        .login-box {
+          background: white;
+          padding: 48px;
+          border-radius: 12px;
+          width: 100%;
+          max-width: 420px;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-box h2 {
+          font-size: 28px;
+          font-weight: 700;
+          text-align: center;
+          margin-bottom: 32px;
+          color: #1f2937;
+        }
+        
+        .form-group {
+          margin-bottom: 20px;
+        }
+        
+        .form-group label {
+          display: block;
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 8px;
+          color: #4b5563;
+        }
+        
+        .form-group input {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          font-size: 16px;
+          transition: all 0.2s;
+        }
+        
+        .form-group input:focus {
+          outline: none;
+          border-color: #2563eb;
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .btn-submit {
+          width: 100%;
+          background: #2563eb;
+          color: white;
+          border: none;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          margin-top: 20px;
+          transition: all 0.2s;
+        }
+        
+        .btn-submit:hover {
+          background: #1d4ed8;
+        }
+        
+        .login-error {
+          color: #dc2626;
+          font-size: 14px;
+          margin-bottom: 16px;
+          display: none;
+        }
+        
+        .login-error.show {
+          display: block;
+        }
+        
+        /* ===== DASHBOARD ===== */
+        .screen-dashboard {
+          background: white;
+        }
+        
+        .dashboard-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 40px;
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+        
+        .dashboard-welcome h1 {
+          font-size: 32px;
+          font-weight: 700;
+          color: #2563eb;
+          margin-bottom: 8px;
+        }
+        
+        .dashboard-welcome p {
+          font-size: 20px;
+          font-weight: 600;
+          color: #1f2937;
+        }
+        
+        .header-buttons {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        
+        .btn-admin {
+          background: #7c3aed;
+          color: white;
+          border: none;
+          padding: 12px 32px;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .btn-admin:hover {
+          background: #6d28d9;
+          transform: translateY(-2px);
+        }
+        
+        .btn-logout {
+          background: #dc2626;
+          color: white;
+          border: none;
+          padding: 12px 32px;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .btn-logout:hover {
+          background: #b91c1c;
+          transform: translateY(-2px);
+        }
+        
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 32px;
+          margin-top: 20px;
+        }
+        
+        .dashboard-card {
+          background: #1f2937;
+          color: #e5e7eb;
+          padding: 32px;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-card h3 {
+          font-size: 22px;
+          font-weight: 700;
+          margin-bottom: 24px;
+        }
+        
+        .status-display {
+          font-size: 32px;
+          font-weight: 700;
+          margin-bottom: 24px;
+          font-family: 'Courier New', monospace;
+          padding: 16px;
+          background: #111827;
+          border-radius: 8px;
+          border: 2px solid #374151;
+        }
+        
+        .pin-display {
+          background: #111827;
+          padding: 20px;
+          border-radius: 8px;
+          font-size: 36px;
+          font-family: 'Courier New', monospace;
+          letter-spacing: 8px;
+          text-align: center;
+          color: #60a5fa;
+          margin-bottom: 24px;
+          border: 2px solid #374151;
+        }
+        
+        .pinpad {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+        
+        .pin-btn {
+          padding: 16px;
+          background: #2563eb;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 18px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .pin-btn:hover {
+          background: #1d4ed8;
+          transform: translateY(-2px);
+        }
+        
+        .pin-btn.special {
+          background: #7c3aed;
+        }
+        
+        .pin-btn.special:hover {
+          background: #6d28d9;
+        }
+        
+        .button-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-top: 20px;
+        }
+        
+        .btn-clear {
+          padding: 12px;
+          background: #dc2626;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .btn-clear:hover {
+          background: #b91c1c;
+        }
+        
+        .btn-send {
+          padding: 12px;
+          background: #16a34a;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .btn-send:hover {
+          background: #15803d;
+        }
+        
+        .sensor-text {
+          font-size: 16px;
+          margin-bottom: 8px;
+        }
+        
+        /* ===== ADMIN PANEL - SCREEN 4 ===== */
+        .admin-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 40px;
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+        
+        .admin-header h1 {
+          font-size: 32px;
+          font-weight: 700;
+          color: #2563eb;
+        }
+        
+        .devices-list {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 24px;
+        }
+        
+        .device-card {
+          background: white;
+          border: 2px solid #e5e7eb;
+          padding: 24px;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .device-card.admin {
+          border-color: #7c3aed;
+        }
+        
+        .device-card.locked {
+          background: #fee2e2;
+          border-color: #dc2626;
+        }
+        
+        .device-info {
+          margin-bottom: 16px;
+        }
+        
+        .device-info p {
+          font-size: 14px;
+          margin-bottom: 8px;
+          color: #4b5563;
+        }
+        
+        .device-info strong {
+          color: #1f2937;
+          font-weight: 600;
+        }
+        
+        .device-actions {
+          display: flex;
+          gap: 12px;
+          margin-top: 16px;
+        }
+        
+        .btn-lock {
+          flex: 1;
+          padding: 10px;
+          background: #dc2626;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .btn-lock:hover {
+          background: #b91c1c;
+        }
+        
+        .btn-unlock {
+          flex: 1;
+          padding: 10px;
+          background: #16a34a;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .btn-unlock:hover {
+          background: #15803d;
+        }
+        
+        .btn-back {
+          background: #6b7280;
+          color: white;
+          border: none;
+          padding: 12px 32px;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .btn-back:hover {
+          background: #4b5563;
+        }
+        
+        /* ===== LOCK SCREEN ===== */
+        .screen-locked {
+          background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+          display: none !important;
+          justify-content: center;
+          align-items: center;
+        }
+        
+        .screen-locked.active {
+          display: flex !important;
+        }
+        
+        .lock-screen-content {
+          text-align: center;
+          color: white;
+        }
+        
+        .lock-icon {
+          font-size: 80px;
+          margin-bottom: 20px;
+          animation: pulse 1s infinite;
+        }
+        
+        .lock-title {
+          font-size: 32px;
+          font-weight: 700;
+          margin-bottom: 10px;
+        }
+        
+        .lock-subtitle {
+          font-size: 18px;
+          color: #d1d5db;
+          margin-bottom: 20px;
+        }
+        
+        .lock-message {
+          font-size: 16px;
+          color: #ef4444;
+          font-weight: 600;
+          margin-top: 20px;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+        
+        @media (max-width: 768px) {
+          .home-header {
+            flex-direction: column;
+            text-align: center;
+            margin-bottom: 40px;
+          }
+          
+          .home-title-section h1 {
+            font-size: 32px;
+          }
+          
+          .hero-content h2 {
+            font-size: 28px;
+          }
+          
+          .dashboard-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 16px;
+          }
+          
+          .dashboard-welcome h1 {
+            font-size: 24px;
+          }
+          
+          .dashboard-welcome p {
+            font-size: 16px;
+          }
+          
+          .header-buttons {
+            flex-direction: column;
+            width: 100%;
+          }
+          
+          .header-buttons button {
+            width: 100%;
+            padding: 10px 16px;
+            font-size: 14px;
+          }
+          
+          .dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+          
+          .dashboard-card {
+            padding: 20px;
+          }
+          
+          .dashboard-card h3 {
+            font-size: 18px;
+          }
+          
+          .status-display {
+            font-size: 24px;
+          }
+          
+          .pin-display {
+            font-size: 28px;
+            letter-spacing: 4px;
+            padding: 16px;
+          }
+          
+          .pinpad {
+            gap: 8px;
+          }
+          
+          .pin-btn {
+            padding: 14px;
+            font-size: 16px;
+          }
+          
+          .button-row {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+          }
+          
+          .btn-clear, .btn-send {
+            padding: 10px;
+            font-size: 14px;
+          }
+          
+          .devices-list {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+          
+          .device-card {
+            padding: 16px;
+          }
+          
+          .device-info p {
+            font-size: 12px;
+          }
+          
+          .device-actions {
+            gap: 8px;
+          }
+          
+          .btn-lock, .btn-unlock {
+            padding: 8px;
+            font-size: 12px;
+          }
+          
+          .admin-header {
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 0 10px;
+          }
+          
+          .admin-header h1 {
+            font-size: 22px;
+          }
+          
+          .btn-back {
+            width: 100%;
+            padding: 10px 16px;
+            font-size: 14px;
+          }
+          
+          .login-box {
+            padding: 32px 20px;
+            max-width: 90%;
+          }
+          
+          .login-box h2 {
+            font-size: 22px;
+            margin-bottom: 24px;
+          }
+          
+          .form-group input {
+            padding: 10px;
+            font-size: 14px;
+          }
+          
+          .btn-submit {
+            padding: 10px;
+            font-size: 14px;
+          }
+          
+          .lock-icon {
+            font-size: 60px;
+          }
+          
+          .lock-title {
+            font-size: 24px;
+          }
+          
+          .lock-subtitle {
+            font-size: 16px;
+          }
+          
+          .lock-message {
+            font-size: 14px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .home-header {
+            margin-bottom: 20px;
+          }
+          
+          .hero-content {
+            margin-bottom: 30px;
+          }
+          
+          .home-title-section h1 {
+            font-size: 24px;
+          }
+          
+          .hero-content h2 {
+            font-size: 22px;
+          }
+          
+          .hero-content p {
+            font-size: 14px;
+          }
+          
+          .cards-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 20px;
+          }
+          
+          .card {
+            padding: 16px;
+          }
+          
+          .card h3 {
+            font-size: 18px;
+          }
+          
+          .card p {
+            font-size: 14px;
+          }
+          
+          .dashboard-welcome h1 {
+            font-size: 20px;
+          }
+          
+          .btn-admin, .btn-logout {
+            padding: 8px 16px;
+            font-size: 12px;
+          }
+          
+          .pin-display {
+            font-size: 24px;
+            letter-spacing: 2px;
+          }
+          
+          .pinpad {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+          }
+          
+          .pin-btn {
+            padding: 12px;
+            font-size: 14px;
+          }
+          
+          .sensor-text {
+            font-size: 13px;
+          }
+          
+          .device-card {
+            padding: 12px;
+          }
+          
+          .admin-header {
+            padding: 0;
+          }
+          
+          .admin-header h1 {
+            font-size: 20px;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <!-- HOME SCHERM -->
+      <div class="screen screen-home active" id="screen1">
+        <div class="container">
+          <div class="home-header">
+            <div class="home-title-section">
+              <h1>🔒 Inbreker Detector 7000</h1>
+              <p>Professioneel beveiligingssysteem</p>
+            </div>
+            <div class="home-buttons">
+              <button class="btn-login" onclick="openLoginModal()">🔐 Inloggen</button>
+            </div>
+          </div>
+
+          <div class="hero-content">
+            <h2>Geavanceerde Beveiliging op afstand</h2>
+            <p>Controleer en beheer uw beveiligingssysteem via het geavanceerde web-interface. Ontvang real-time alerts en bedien het systeem van overal.</p>
+          </div>
+
+          <div class="cards-grid">
+            <div class="card">
+              <h3>🔐 Veilig & Betrouwbaar</h3>
+              <p>Het systeem is ontworpen met geavanceerde sensoren en AI-technologie om inbrekers snel en betrouwbaar te detecteren.</p>
+            </div>
+            <div class="card">
+              <h3>⚡ Snel Alarm</h3>
+              <p>Bij detectie van inbraak stuurt het systeem direct een alarmsignaal en e-mailnotificatie naar alle geregistreerde eigenaren.</p>
+            </div>
+            <div class="card">
+              <h3>📱 Overal Toegang</h3>
+              <p>Bedien uw systeem van thuis of onderweg via het intuïtieve webinterface. Volledige controle in uw handen.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGIN MODAL -->
+      <div class="login-modal" id="loginModal">
+        <div class="login-box">
+          <h2>🔐 Inloggen</h2>
+          <div class="login-error" id="loginError">Ongeldige gegevens</div>
+          
+          <div class="form-group">
+            <label for="username">👤 Gebruikersnaam</label>
+            <input type="text" id="username" placeholder="Voer je gebruikersnaam in">
+          </div>
+          
+          <div class="form-group">
+            <label for="password">🔑 Wachtwoord</label>
+            <input type="password" id="password" placeholder="Voer je wachtwoord in">
+          </div>
+          
+          <button class="btn-submit" onclick="handleLogin()">Inloggen</button>
+          <button class="btn-submit" style="background: #6b7280; margin-top: 8px;" onclick="closeLoginModal()">Sluiten</button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD SCHERM -->
+      <div class="screen screen-dashboard" id="screen3">
+        <div class="container">
+          <div class="dashboard-header">
+            <div class="dashboard-welcome">
+              <h1>Welkom terug 👋</h1>
+              <p id="welcomeName">User</p>
+            </div>
+            <div class="header-buttons">
+              <button class="btn-admin" id="adminBtn" onclick="goToAdminPanel()" style="display: none;">⚙️ Apparaten</button>
+              <button class="btn-logout" onclick="handleLogout()">🚪 Uitloggen</button>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Status Card -->
+            <div class="dashboard-card">
+              <h3>📊 Alarmstatus</h3>
+              <p class="sensor-text">🟢 Alle sensoren actief</p>
+            </div>
+
+            <!-- PIN Control Card -->
+            <div class="dashboard-card">
+              <h3>🔐 Bedieningspaneel</h3>
+              <div class="pin-display" id="pinDisplay">0000</div>
+              
+              <div class="pinpad">
+                <button class="pin-btn" onclick="addPin('1')">1</button>
+                <button class="pin-btn" onclick="addPin('2')">2</button>
+                <button class="pin-btn" onclick="addPin('3')">3</button>
+                <button class="pin-btn" onclick="addPin('4')">4</button>
+                <button class="pin-btn" onclick="addPin('5')">5</button>
+                <button class="pin-btn" onclick="addPin('6')">6</button>
+                <button class="pin-btn" onclick="addPin('7')">7</button>
+                <button class="pin-btn" onclick="addPin('8')">8</button>
+                <button class="pin-btn" onclick="addPin('9')">9</button>
+                <button class="pin-btn special" onclick="addPin('*')">*</button>
+                <button class="pin-btn" onclick="addPin('0')">0</button>
+                <button class="pin-btn special" onclick="addPin('#')">#</button>
+              </div>
+
+              <div class="button-row">
+                <button class="btn-clear" onclick="clearPin()">🗑️ Verwijderen</button>
+                <button class="btn-send" onclick="sendPin()">✓ Verzend</button>
+              </div>
+            </div>
+
+            <!-- System Info Card -->
+            <div class="dashboard-card">
+              <h3>ℹ️ Systeeminformatie</h3>
+              <p class="sensor-text">🟢 Bewegingssensor: ACTIEF</p>
+              <p class="sensor-text">🟢 Geluidsensor: ACTIEF</p>
+              <p class="sensor-text">🔵 Temperatuur: 22°C</p>
+              <p class="sensor-text">📡 Verbinding: STERK</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN PANEL - SCREEN 4 -->
+      <div class="screen screen-dashboard" id="screen4">
+        <div class="container">
+          <div class="admin-header">
+            <h1>⚙️ Apparaatbeheer</h1>
+            <button class="btn-back" onclick="backToDashboard()">← Terug</button>
+          </div>
+
+          <div id="devicesList" class="devices-list">
+            <!-- Devices worden hier ingeladen -->
+          </div>
+        </div>
+      </div>
+
+      <!-- LOCK SCREEN - SCREEN 5 (ONLY SHOWS WHEN LOCKED) -->
+      <div class="screen screen-locked" id="screen5">
+        <div class="lock-screen-content">
+          <div class="lock-icon">🔒</div>
+          <div class="lock-title">🔒 Inbreker Detector 7000</div>
+          <div class="lock-subtitle">Secure by SecureWatch OS</div>
+          <div class="lock-message">De admin heeft je geblokkeerd van het netwerk</div>
+        </div>
+      </div>
+
+      <script>
+        let currentPin = '';
+        let authenticatedUser = '';
+        let userDeviceId = '';
+        let isAdmin = false;
+
+        function openLoginModal() {
+          document.getElementById('loginModal').classList.add('active');
+          document.getElementById('username').value = '';
+          document.getElementById('password').value = '';
+          document.getElementById('loginError').classList.remove('show');
+        }
+
+        function closeLoginModal() {
+          document.getElementById('loginModal').classList.remove('active');
+        }
+
+        function handleLogin() {
+          const username = document.getElementById('username').value.trim().toLowerCase();
+          const password = document.getElementById('password').value.trim();
+          
+          if (username === '' || password === '') {
+            document.getElementById('loginError').textContent = 'Vul alle velden in';
+            document.getElementById('loginError').classList.add('show');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('username', username);
+          formData.append('password', password);
+
+          fetch('/login', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              authenticatedUser = username.charAt(0).toUpperCase() + username.slice(1);
+              isAdmin = data.isAdmin;
+              userDeviceId = data.deviceId;
+              
+              document.getElementById('welcomeName').textContent = authenticatedUser + (isAdmin ? ' (Admin)' : '');
+              document.getElementById('adminBtn').style.display = isAdmin ? 'block' : 'none';
+              
+              currentPin = '';
+              updatePinDisplay();
+              
+              // Hide home, show dashboard
+              document.getElementById('screen1').classList.remove('active');
+              document.getElementById('screen3').classList.add('active');
+              document.getElementById('screen3').classList.add('fullscreen');
+              
+              // Request fullscreen
+              const elem = document.documentElement;
+              if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {});
+              }
+              
+              closeLoginModal();
+              updateStatus();
+            } else {
+              document.getElementById('loginError').textContent = 'Ongeldige gebruikersnaam of wachtwoord';
+              document.getElementById('loginError').classList.add('show');
+            }
+          })
+          .catch(error => {
+            document.getElementById('loginError').textContent = 'Verbindingsfout';
+            document.getElementById('loginError').classList.add('show');
+          });
+        }
+
+        function addPin(digit) {
+          // Allow up to 5 characters (4 digits + 1 special char)
+          if (currentPin.length < 5) {
+            currentPin += digit;
+            updatePinDisplay();
+            
+            // If 5th character is #, automatically send
+            if (currentPin.length === 5 && digit === '#') {
+              setTimeout(sendPin, 100);
+            }
+          }
+        }
+
+        function clearPin() {
+          currentPin = '';
+          updatePinDisplay();
+        }
+
+        function updatePinDisplay() {
+          const display = currentPin.padEnd(4, '0');
+          document.getElementById('pinDisplay').textContent = display;
+        }
+
+        function sendPin() {
+          console.log("📤 sendPin called, currentPin:", currentPin);
+          
+          if (currentPin.length !== 5) {
+            console.log("❌ ERROR: currentPin length is", currentPin.length, "but should be 5");
+            return;
+          }
+          
+          if (currentPin[4] !== '#') {
+            console.log("❌ ERROR: last char is", currentPin[4], "but should be #");
+            return;
+          }
+
+          // Extract the 4 digits without the #
+          const code = currentPin.substring(0, 4);
+          console.log("📝 Sending code:", code);
+          console.log("🔢 Will send: " + code + "#");
+          
+          const formData = new FormData();
+          formData.append('code', code);
+          formData.append('deviceId', userDeviceId);
+
+          console.log("🌐 Fetch /verzend started...");
+          fetch('/verzend', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => {
+            console.log("📨 Response received, status:", response.status);
+            if (!response.ok) throw new Error('HTTP error ' + response.status);
+            return response.text();
+          })
+          .then(text => {
+            console.log("📄 Response text:", text);
+            console.log("✅ Code + # verzonden naar Arduino!");
+            clearPin();
+          })
+          .catch(error => {
+            console.error('❌ Fout bij verzenden:', error);
+          });
+        }
+
+        function goToAdminPanel() {
+          document.getElementById('screen3').classList.remove('active');
+          document.getElementById('screen4').classList.add('active');
+          document.getElementById('screen4').classList.add('fullscreen');
+          loadDevices();
+        }
+
+        function backToDashboard() {
+          document.getElementById('screen4').classList.remove('active');
+          document.getElementById('screen3').classList.add('active');
+        }
+
+        function loadDevices() {
+          fetch('/devices')
+            .then(response => response.json())
+            .then(devices => {
+              const devicesList = document.getElementById('devicesList');
+              devicesList.innerHTML = '';
+              
+              devices.forEach(device => {
+                const deviceCard = document.createElement('div');
+                deviceCard.className = 'device-card' + (device.isAdmin ? ' admin' : '') + (device.isLocked ? ' locked' : '');
+                
+                const statusBadge = device.isLocked ? '🔒 VERGRENDELD' : '🔓 ACTIEF';
+                const adminBadge = device.isAdmin ? ' <span style="background: #7c3aed; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">ADMIN</span>' : '';
+                
+                deviceCard.innerHTML = `
+                  <div class="device-info">
+                    <p>Apparaat ID: <strong>${device.deviceId}</strong></p>
+                    <p>Gebruiker: <strong>${device.username}</strong></p>
+                    <p>Status: <strong>${statusBadge}</strong>${adminBadge}</p>
+                    <p>Verbonden: <strong>${new Date(device.connectedTime).toLocaleTimeString('nl-NL')}</strong></p>
+                  </div>
+                  <div class="device-actions">
+                    ${!device.isLocked ? `<button class="btn-lock" onclick="lockDevice('${device.deviceId}')">🔒 Vergrendelen</button>` : `<button class="btn-unlock" onclick="unlockDevice('${device.deviceId}')">🗝️ Ontgrendelen</button>`}
+                  </div>
+                `;
+                
+                devicesList.appendChild(deviceCard);
+              });
+            })
+            .catch(err => console.log('Error loading devices'));
+        }
+
+        function lockDevice(deviceId) {
+          const formData = new FormData();
+          formData.append('deviceId', deviceId);
+
+          fetch('/lock', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => {
+            loadDevices();
+            alert('✓ Apparaat vergrendeld!');
+          })
+          .catch(error => alert('Fout: ' + error));
+        }
+
+        function unlockDevice(deviceId) {
+          const formData = new FormData();
+          formData.append('deviceId', deviceId);
+
+          fetch('/unlock', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.text())
+          .then(result => {
+            if (result === 'OK') {
+              loadDevices();
+              alert('✓ Apparaat ontgrendeld!');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Fout: ' + error);
+          });
+        }
+
+        function handleLogout() {
+          authenticatedUser = '';
+          currentPin = '';
+          userDeviceId = '';
+          isAdmin = false;
+          
+          document.getElementById('screen3').classList.remove('active');
+          document.getElementById('screen3').classList.remove('fullscreen');
+          document.getElementById('screen4').classList.remove('active');
+          document.getElementById('screen4').classList.remove('fullscreen');
+          document.getElementById('screen5').classList.remove('active');
+          document.getElementById('screen5').classList.remove('fullscreen');
+          document.getElementById('screen1').classList.add('active');
+          
+          document.getElementById('adminBtn').style.display = 'none';
+          
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(err => {});
+          }
+          
+          fetch('/logout', { method: 'POST' })
+            .catch(err => console.log('Logout'));
+        }
+
+        function updateStatus() {
+          fetch('/status')
+            .then(response => response.text())
+            .then(text => {
+              document.getElementById('statusDisplay').textContent = text;
+            })
+            .catch(err => console.log('Status failed'));
+        }
+
+        // Check if device is locked - ONLY show lock screen if actually locked
+        function checkLockStatus() {
+          fetch('/check-lock?deviceId=' + userDeviceId)
+            .then(response => response.json())
+            .then(data => {
+              const isCurrentlyOnLockScreen = document.getElementById('screen5').classList.contains('active');
+              
+              if (data.isLocked && !isCurrentlyOnLockScreen) {
+                document.getElementById('screen3').classList.remove('active');
+                document.getElementById('screen3').classList.remove('fullscreen');
+                document.getElementById('screen4').classList.remove('active');
+                document.getElementById('screen4').classList.remove('fullscreen');
+                document.getElementById('screen5').classList.add('active');
+                document.getElementById('screen5').classList.add('fullscreen');
+              } else if (!data.isLocked && isCurrentlyOnLockScreen) {
+                document.getElementById('screen5').classList.remove('active');
+                document.getElementById('screen5').classList.remove('fullscreen');
+                document.getElementById('screen3').classList.add('active');
+                document.getElementById('screen3').classList.add('fullscreen');
+              }
+            })
+            .catch(err => {});
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+          if (!document.getElementById('screen3').classList.contains('active')) return;
+
+          const key = event.key;
+          
+          if (key >= '0' && key <= '9') {
+            event.preventDefault();
+            addPin(key);
+          }
+          else if (key === '*' || (event.shiftKey && key === '8')) {
+            event.preventDefault();
+            addPin('*');
+          }
+          else if (key === '#' || (event.shiftKey && key === '3')) {
+            event.preventDefault();
+            addPin('#');
+          }
+          else if (key === 'Backspace') {
+            event.preventDefault();
+            if (currentPin.length > 0) {
+              currentPin = currentPin.slice(0, -1);
+              updatePinDisplay();
+            }
+          }
+          else if (key === 'Enter') {
+            event.preventDefault();
+            sendPin();
+          }
+        });
+
+        // Auto-refresh status and check lock
+        setInterval(() => {
+          if (document.getElementById('screen3').classList.contains('active')) {
+            updateStatus();
+            checkLockStatus();
+          }
+        }, 2000);
+
+        // Close modal when pressing Escape
+        document.addEventListener('keydown', function(event) {
+          if (event.key === 'Escape') {
+            closeLoginModal();
+          }
+        });
+      </script>
+    </body>
+    </html>
+  
